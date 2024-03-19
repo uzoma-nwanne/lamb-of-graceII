@@ -13,6 +13,11 @@ export default function ContactForm() {
   return (
     <div>
       <form className="flex flex-col gap-4" action={action}>
+      {formState.errors._success ? (
+          <div className="rounded p-2 bg-green-200 border border-green-400">
+            {formState.errors._success?.join(", ")}
+          </div>
+        ) : null}
         <Input
           name="name"
           label="Name"

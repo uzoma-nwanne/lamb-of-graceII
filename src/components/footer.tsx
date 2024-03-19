@@ -7,7 +7,7 @@ export default function Footer(){
     return( <div className='flex flex-col md:flex-row bg-[#173666] w-full h-120: md:h-80 mt-40 px-20 py-10'>
     <div className='w-full md:w-1/2 flex'>
       <div className='w-1/4 '>
-        <img src={"assets/flight.svg"} className=''/>
+        <Image src={"/assets/flight.svg"} className='' alt='Flight' width={200} height={200}/>
       </div>
       <div className='flex flex-col justify-start space-y-4'>
         <h3 className='text-[#fff] text-4xl'>Lamb of Grace</h3>

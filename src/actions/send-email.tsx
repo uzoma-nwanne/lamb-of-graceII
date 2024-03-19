@@ -1,12 +1,12 @@
-'use server';
+"use server";
 
-import { redirect } from 'next/navigation';
-import { z } from 'zod';
+import { redirect } from "next/navigation";
+import { z } from "zod";
 //import paths from '@/paths';
 
 const sendMessageSchema = z.object({
   name: z.string().min(3, { message: "Must be 3 or more characters long." }),
-  email:z.string().min(3).email({ message: "Must be a valid email address." }),
+  email: z.string().min(3).email({ message: "Must be a valid email address." }),
   phone: z.string().min(5),
   message: z.string().min(10),
 });
@@ -18,6 +18,7 @@ interface SendMessageFormState {
     email?: string[];
     message?: string[];
     _form?: string[];
+    _success?: string[];
   };
 }
 
@@ -26,10 +27,10 @@ export async function sendMessage(
   formData: FormData
 ): Promise<SendMessageFormState> {
   const result = sendMessageSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    phone: formData.get('phone'),
-    message: formData.get('message'),
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    message: formData.get("message"),
   });
 
   if (!result.success) {
@@ -37,51 +38,17 @@ export async function sendMessage(
       errors: result.error.flatten().fieldErrors,
     };
   }
+  const apiEndpoint = process.env.ROOT+"/api/email/";
+ fetch(apiEndpoint, {
+    method: "POST",
+    body: JSON.stringify(result.data),
+  }) .then((res) => res.json())
+  .then((response) => {
+    console.log(response.message);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
- console.log(result.data.name)
-//   const topic = await db.topic.findFirst({
-//     where: { slug },
-//   });
-
-//   if (!topic) {
-//     return {
-//       errors: {
-//         _form: ['Cannot find topic'],
-//       },
-//     };
-//   }
-
-//   let post: Post;
-//   try {
-//     post = await db.post.create({
-//       data: {
-//         title: result.data.title,
-//         content: result.data.content,
-//         userId: session.user.id,
-//         topicId: topic.id,
-//       },
-//     });
-//   } catch (err: unknown) {
-//     if (err instanceof Error) {
-//       return {
-//         errors: {
-//           _form: [err.message],
-//         },
-//       };
-//     } else {
-//       return {
-//         errors: {
-//           _form: ['Failed to send message'],
-//         },
-//       };
-//     }
-//   }
-
-//   revalidatePath(paths.topicShow(slug));
-//   redirect(paths.postShow(slug, post.id));
-return {
-            errors: {
-              _form: ['Failed to send message'],
-            },
-          };
+  return { errors: {} };
 }
