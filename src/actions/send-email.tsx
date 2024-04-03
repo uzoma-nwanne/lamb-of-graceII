@@ -1,8 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { z } from "zod";
 //import paths from '@/paths';
+const dotenv = require('dotenv');
+
+dotenv.config()
 
 const sendMessageSchema = z.object({
   name: z.string().min(3, { message: "Must be 3 or more characters long." }),
@@ -26,6 +28,7 @@ export async function sendMessage(
   formState: SendMessageFormState,
   formData: FormData
 ): Promise<SendMessageFormState> {
+  let response = "";
   const result = sendMessageSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -38,17 +41,34 @@ export async function sendMessage(
       errors: result.error.flatten().fieldErrors,
     };
   }
-  const apiEndpoint = process.env.ROOT+"/api/email/";
- fetch(apiEndpoint, {
-    method: "POST",
-    body: JSON.stringify(result.data),
-  }) .then((res) => res.json())
-  .then((response) => {
-    console.log(response.message);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
-  return { errors: {} };
+  const apiEndpoint = process.env.ROOT + "/api/email/";
+
+  const sendMail = async () => {
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      body: JSON.stringify(result.data),
+    });
+    const data = await response.json();
+    return data;
+  };
+
+  try {
+    response = await sendMail();
+  } catch (e) {
+    console.log(e);
+  }
+  if (response) {
+    return {
+      errors: {
+        _success: ["Message sent"],
+      },
+    };
+  } else {
+    return {
+      errors: {
+        _form: ["Something went wrong"],
+      },
+    };
+  }
 }

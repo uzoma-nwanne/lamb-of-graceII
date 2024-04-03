@@ -1,5 +1,6 @@
 "use client";
 
+import { useState , useEffect} from "react";
 import { useFormState } from "react-dom";
 import { Input, Button, Textarea } from "@nextui-org/react";
 import FormButton from "../common/form-button";
@@ -9,6 +10,7 @@ export default function ContactForm() {
   const [formState, action] = useFormState(actions.sendMessage, {
     errors: {},
   });
+
 
   return (
     <div>
@@ -25,6 +27,7 @@ export default function ContactForm() {
           placeholder="Name"
           isInvalid={!!formState.errors.name}
           errorMessage={formState.errors.name?.join(", ")}
+          isClearable
         />
         <Input
           name="email"
@@ -33,6 +36,7 @@ export default function ContactForm() {
           placeholder="Email"
           isInvalid={!!formState.errors.email}
           errorMessage={formState.errors.email?.join(", ")}
+          defaultValue=""
         />
         <Input
           name="phone"
@@ -41,6 +45,7 @@ export default function ContactForm() {
           placeholder="Phone"
           isInvalid={!!formState.errors.phone}
           errorMessage={formState.errors.phone?.join(", ")}
+          defaultValue=""
         />
 
         <Textarea
@@ -50,6 +55,7 @@ export default function ContactForm() {
           placeholder="Message"
           isInvalid={!!formState.errors.message}
           errorMessage={formState.errors.message?.join(", ")}
+          defaultValue=""
         />
 
         {formState.errors._form ? (

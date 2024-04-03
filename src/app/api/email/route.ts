@@ -4,14 +4,17 @@ import Mail from "nodemailer/lib/mailer";
 
 export async function POST(request: NextRequest) {
   const { phone, email, name, message } = await request.json();
+  const PASSWORD = process.env.PASSWORD
+  const EMAIL=process.env.EMAIL
+  const from = email
   const transport = nodemailer.createTransport({
     service: "namecheap",
     host: "mail.privateemail.com",
     port: 465,
     secure: true,
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
+      user: EMAIL,
+      pass: PASSWORD,
     },
     tls: {
       // do not fail on invalid certs
@@ -20,8 +23,8 @@ export async function POST(request: NextRequest) {
   });
 
   const mailOptions: Mail.Options = {
-    from: name,
-    to: process.env.EMAIL,
+    from: EMAIL,
+    to: EMAIL,
     // cc: email, (uncomment this line if you want to send a copy to the sender)
     subject: `Message from ${name} (${email}) (${phone})`,
     text: message,
@@ -32,10 +35,8 @@ export async function POST(request: NextRequest) {
       transport.sendMail(mailOptions, function (err) {
         if (!err) {
           resolve("Email sent");
-          console.log("Email")
         } else {
           reject(err.message);
-          console.log("Error")
         }
       });
     });
