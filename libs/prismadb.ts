@@ -4,8 +4,8 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-const client = globalThis.prisma || new PrismaClient();
+const dbClient = globalThis.prisma || new PrismaClient();
 
-if (process.env.NODE_ENV !== "production") globalThis.prisma = client;
+if (process.env.NODE_ENV !== "production") globalThis.prisma = dbClient;
 
-export default client;
+export default dbClient;

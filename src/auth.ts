@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { CredentialsProvider } from "next-auth/providers/credentials";
+import  CredentialsProvider  from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
@@ -8,7 +8,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 export const {
-  handlers: { GET, POST },
+
   auth,
   signIn,
   signOut,
@@ -19,7 +19,7 @@ export const {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
-    // @ts-ignore
+
     CredentialsProvider({
       name: "credentials",
       credentials: {
