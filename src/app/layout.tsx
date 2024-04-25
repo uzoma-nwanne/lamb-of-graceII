@@ -10,6 +10,7 @@ config.autoAddCss = false;
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,14 @@ export default function RootLayout({
       />
       <body className={inter.className}>
         <Header />
+        <Toaster
+          toastOptions={{
+            style: {
+              background: "rgb(51 65 85)",
+              color: "#fff",
+            },
+          }}
+        />
         {children}
         <Footer />
       </body>
