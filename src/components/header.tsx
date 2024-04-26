@@ -24,13 +24,13 @@ export default function Header() {
   const [contact, setContact] = useState(false);
   const [blog, setBlog] = useState(false);
   useEffect(() => {
-    if (pathname === "/") {
+    if (location.pathname === "/") {
       setHome(true);
       setServices(false);
       setAbout(false);
       setContact(false);
     }
-    if (pathname === "/services") {
+    if (location.pathname === "/services") {
       setHome(false);
       setServices(true);
       setAbout(false);
@@ -42,13 +42,13 @@ export default function Header() {
       setAbout(true);
       setContact(false);
     }
-    if (pathname === "/contact") {
+    if (location.pathname === "/contact") {
       setHome(false);
       setServices(false);
       setAbout(false);
       setContact(true);
     }
-    if (pathname === "/blog") {
+    if (location.pathname === "/blog") {
       setHome(false);
       setBlog(true);
       setServices(false);
@@ -141,7 +141,9 @@ export default function Header() {
         </NavbarContent>
         <NavbarContent justify="end" className="hidden sm:flex">
           <NavbarItem className="hidden lg:flex">
-            <Link href="#">Login</Link>
+            <Button as={Link} color="secondary" href="/login" variant="flat">
+              Login
+            </Button>
           </NavbarItem>
           <NavbarItem>
             <Button as={Link} color="primary" href="/register" variant="flat">
@@ -176,12 +178,12 @@ export default function Header() {
             </Link>
           </NavbarMenuItem>
           <NavbarMenuItem>
-            <Button as={Link} color="secondary" href="#" variant="flat">
+            <Button as={Link} color="secondary" href="/login" variant="flat">
               Login
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem>
-          <Button as={Link} color="primary" href="/register" variant="flat">
+            <Button as={Link} color="primary" href="/register" variant="flat">
               Login
             </Button>
           </NavbarMenuItem>

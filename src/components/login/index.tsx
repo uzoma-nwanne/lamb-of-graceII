@@ -7,39 +7,27 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axios from 'axios'
+import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import paths from "../../../path";
 
-const registerSchema = z
-  .object({
-    name: z.string().min(3, { message: "Must be 3 or more characters long." }),
-    email: z
-      .string()
-      .min(3, { message: "Email is required" })
-      .email({ message: "Must be a valid email address." }),
-    password: z
-      .string()
-      .min(5, { message: "Password must be atleast 5 characters" }),
-    confirmPassword: z
-      .string()
-      .min(5, { message: "Confirm Password is required" }),
-    // terms: z.literal(true, {
-    //   errorMap: () => ({ message: "You must accept Terms and Conditions" }),
-    // }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Password don't match",
-  });
+const registerSchema = z.object({
+  email: z
+    .string()
+    .min(3, { message: "Email is required" })
+    .email({ message: "Must be a valid email address." }),
+  password: z
+    .string()
+    .min(5, { message: "Password must be atleast 5 characters" }),
+});
 
 type RegisterSchema = z.infer<typeof registerSchema>;
 
 export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -47,14 +35,13 @@ export default function Register() {
   } = useForm<RegisterSchema>({ resolver: zodResolver(registerSchema) });
 
   const onSubmit: SubmitHandler<RegisterSchema> = (data) => {
-    setIsLoading(true)
-    toast.success('User registered successfully');
-    axios.post('api/register',data).then(()=>{
-      signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      }).then((callback) => {
+    setIsLoading(true);
+    signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    })
+      .then((callback) => {
         if (callback?.ok) {
           router.push(paths.contact());
           router.refresh();
@@ -64,24 +51,23 @@ export default function Register() {
         if (callback?.error) {
           toast.error(callback.error);
         }
+      })
+      .catch(() => toast.error("Something went wrong"))
+      .finally(() => {
+        setIsLoading(false);
       });
-    }) .catch(() => toast.error("Something went wrong"))
-    .finally(() => {
-      setIsLoading(false);
-    });
-    
   };
   return (
     <Container>
       <div className="flex flex-col mt-24 md:w-1/2 mx-auto">
         <h3 className="text-2xl text-center  md:text-6xl my-8 font-semibold">
-          Sign up here
+          Login here
         </h3>
 
         <form className="flex">
           <Button variant="bordered" className="w-full">
             <FontAwesomeIcon icon={faGoogle} />
-            Sign up with Google
+            Login with Google
           </Button>
         </form>
 
@@ -89,17 +75,7 @@ export default function Register() {
           className="flex flex-col gap-4 mt-12"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Input
-            {...register("name")}
-            name="name"
-            id="name"
-            label="Name"
-            labelPlacement="outside"
-            placeholder="Name"
-            isClearable
-            isInvalid={!!errors.name}
-            errorMessage={errors.name?.message}
-          />
+       
           <Input
             {...register("email")}
             name="email"
@@ -124,21 +100,8 @@ export default function Register() {
             isInvalid={!!errors.password}
             errorMessage={errors.password?.message}
           />
-
-          <Input
-            {...register("confirmPassword")}
-            name="confirmPassword"
-            id="confirmPassword"
-            type="password"
-            label="Confirm Password"
-            labelPlacement="outside"
-            placeholder="Confirm Password"
-            isClearable
-            isInvalid={!!errors.confirmPassword}
-            errorMessage={errors.confirmPassword?.message}
-          />
           <Button type="submit" color="primary">
-            {isLoading ? "Loading..." :"Register"}
+            {isLoading ? "Loading..." : "Login"}
           </Button>
         </form>
       </div>
